@@ -66,16 +66,32 @@ var reset = function () {
 var update = function (modifier) {
 	if (38 in keysDown) { // Player holding up
 		hero.y -= hero.speed * modifier;
+		if(hero.y<32){
+			hero.y=32;
+		}
 	}
 	if (40 in keysDown) { // Player holding down
 		hero.y += hero.speed * modifier;
+		if(hero.y>canvas.height-64){
+			hero.y=canvas.height - 64;	
+		}
 	}
 	if (37 in keysDown) { // Player holding left
 		hero.x -= hero.speed * modifier;
+		if(hero.x < 32){
+			hero.x = 32;
+		}
 	}
 	if (39 in keysDown) { // Player holding right
 		hero.x += hero.speed * modifier;
+		if(hero.x>canvas.width-64){
+			hero.x = canvas.width-64;
+		}
 	}
+	//if(this.x < 0) { this.x = 0; }
+     //else if(this.x > Game.width - this.w) { 
+       //this.x = Game.width - this.w 
+     //}
 
 	// Are they touching?
 	if (
