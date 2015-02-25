@@ -34,12 +34,22 @@ princessImage.onload = function () {
 };
 princessImage.src = "images/princess.png";
 
+// stone image
+var stoneReady = false;
+var stoneImage = new Image();
+stoneImage.onload = function(){
+	stoneReady = true;
+};
+stoneImage.src = "images/stone.png";
+
 // Game objects
 var hero = {
 	speed: 256 // movement in pixels per second
 };
 var princess = {};
 var princessesCaught = 0;
+//var stone = {};
+var stoneCollection = [];
 
 // Handle keyboard controls
 var keysDown = {};
@@ -69,6 +79,23 @@ var reset = function () {
 		princess.y = 32;
 	}else if(princess.y>canvas.height-64){
 		princess.y = canvas.height - 64;
+	}
+
+	for(var i=0; i<15; i++){
+		var stone = {};
+		stone.x = 30 + (Math.random() * (canvas.width - 62));
+		if(stone.x<32){
+			stone.x=32;
+		}else if(stone.x>canvas.width-62){
+			stone.x = canvas.width-62;
+		}
+		stone.y = 30 + (Math.random() * (canvas.height - 62));
+		if(stone.y<32){
+			stone.y=32;
+		}else if(stone.y>canvas.height-62){
+			stone.y=canvas.height-62;
+		}
+		stoneCollection[i]=stone;
 	}
 };
 
@@ -125,12 +152,20 @@ var render = function () {
 		ctx.drawImage(princessImage, princess.x, princess.y);
 	}
 
+	if (stoneReady){
+		for(var i=0; i<7 ; i++){
+			var stx = stoneCollection[i].x;
+			var sty = stoneCollection[i].y;
+			ctx.drawImage(stoneImage, stx, sty);
+		}
+	}
+
 	// Score
 	ctx.fillStyle = "rgb(250, 250, 250)";
 	ctx.font = "24px Helvetica";
 	ctx.textAlign = "left";
 	ctx.textBaseline = "top";
-	ctx.fillText("Princesses caught: " + princessesCaught, 32, 32);
+	ctx.fillText("Princesses caught: " + princessesCaught, 0, 0);
 };
 
 // The main game loop
