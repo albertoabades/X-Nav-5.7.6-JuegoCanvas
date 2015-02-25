@@ -59,7 +59,17 @@ var reset = function () {
 
 	// Throw the princess somewhere on the screen randomly
 	princess.x = 32 + (Math.random() * (canvas.width - 64));
+	if(princess.x<32){
+		princess.x=32;
+	}else if(princess.x>canvas.width-64){
+		princess.x=canvas.width-64;
+	}
 	princess.y = 32 + (Math.random() * (canvas.height - 64));
+	if(princess.y < 32){
+		princess.y = 32;
+	}else if(princess.y>canvas.height-64){
+		princess.y = canvas.height - 64;
+	}
 };
 
 // Update game objects
@@ -88,10 +98,6 @@ var update = function (modifier) {
 			hero.x = canvas.width-64;
 		}
 	}
-	//if(this.x < 0) { this.x = 0; }
-     //else if(this.x > Game.width - this.w) { 
-       //this.x = Game.width - this.w 
-     //}
 
 	// Are they touching?
 	if (
