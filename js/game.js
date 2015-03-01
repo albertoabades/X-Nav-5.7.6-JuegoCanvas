@@ -46,10 +46,12 @@ stoneImage.src = "images/stone.png";
 var hero = {
 	speed: 256 // movement in pixels per second
 };
+var lives = 3;
 var princess = {};
 var princessesCaught = 0;
 //var stone = {};
 var stoneCollection = [];
+var maxStones = 7;
 
 // Handle keyboard controls
 var keysDown = {};
@@ -80,47 +82,100 @@ var reset = function () {
 	}else if(princess.y>canvas.height-64){
 		princess.y = canvas.height - 64;
 	}
-
-	for(var i=0; i<15; i++){
+	var i = 0;
+	while(i < maxStones){
 		var stone = {};
 		stone.x = 30 + (Math.random() * (canvas.width - 62));
+		while(((stone.x < ((canvas.width/2) + 34)) && (stone.x > ((canvas.width/2) - 34))) || 
+			((stone.x < (princess.x + 34)) && (stone.x > (princess.x - 34)))){
+			stone.x = 30 + (Math.random() * (canvas.width - 62));
+		}
 		if(stone.x<32){
 			stone.x=32;
 		}else if(stone.x>canvas.width-62){
 			stone.x = canvas.width-62;
 		}
 		stone.y = 30 + (Math.random() * (canvas.height - 62));
+		while(((stone.y < ((canvas.height/2) + 34)) && (stone.y > ((canvas.height/2) -34))) || 
+			((stone.y < (princess.y + 34)) && (stone.y > (princess.y - 34)))){
+			stone.y = 30 + (Math.random() * (canvas.height - 62));
+		}
 		if(stone.y<32){
 			stone.y=32;
 		}else if(stone.y>canvas.height-62){
 			stone.y=canvas.height-62;
 		}
-		stoneCollection[i]=stone;
+		if(i == 0){
+			stoneCollection[i]=stone;
+			i++;
+		}else{
+			var j = 0;
+			var be = false;
+			while((j<i) && (be == false)){
+				//if(((stone.x > stoneCollection[j].x) && (stone.x < (stoneCollection[j].x + 30))) ||
+				//((stone.y > stoneCollection[j].y) && (stone.y < (stoneCollection[j].y + 30)))){
+				if(((stoneCollection[j].x < (stone.x + 32)) && ((stoneCollection[j].x + 32) > stone.x)) || 
+					((stoneCollection[j].y < (stone.y + 32)) && ((stoneCollection[j].y + 32) > stone.y))){
+					be = true;
+				}
+				j++;
+			}
+			if(be == false){
+				stoneCollection[i]= stone;
+				i++;
+			}
+		}
+		
 	}
 };
+
+var colide = function(){
+	for(var i=0;i<maxStones;i++){
+		if((stoneCollection[i].x<=(hero.x+30)) &&
+			(hero.x<=(stoneCollection[i].x+30)) &&
+			(stoneCollection[i].y <= (hero.y+30)) &&
+			(hero.y<=(stoneCollection[i].y+30))
+			){
+				return true;
+		}
+	}
+	return false;
+}
 
 // Update game objects
 var update = function (modifier) {
 	if (38 in keysDown) { // Player holding up
 		hero.y -= hero.speed * modifier;
+		if(colide() == true){
+			hero.y += hero.speed * modifier;
+		}
 		if(hero.y<32){
 			hero.y=32;
 		}
 	}
 	if (40 in keysDown) { // Player holding down
 		hero.y += hero.speed * modifier;
+		if(colide() == true){
+			hero.y -= hero.speed * modifier;
+		}
 		if(hero.y>canvas.height-64){
 			hero.y=canvas.height - 64;	
 		}
 	}
 	if (37 in keysDown) { // Player holding left
 		hero.x -= hero.speed * modifier;
+		if(colide() == true){
+			hero.x += hero.speed * modifier;
+		}
 		if(hero.x < 32){
 			hero.x = 32;
 		}
 	}
 	if (39 in keysDown) { // Player holding right
 		hero.x += hero.speed * modifier;
+		if(colide() == true){
+			hero.y -= hero.speed * modifier;
+		}
 		if(hero.x>canvas.width-64){
 			hero.x = canvas.width-64;
 		}
@@ -153,7 +208,7 @@ var render = function () {
 	}
 
 	if (stoneReady){
-		for(var i=0; i<7 ; i++){
+		for(var i=0; i<maxStones ; i++){
 			var stx = stoneCollection[i].x;
 			var sty = stoneCollection[i].y;
 			ctx.drawImage(stoneImage, stx, sty);
@@ -166,6 +221,7 @@ var render = function () {
 	ctx.textAlign = "left";
 	ctx.textBaseline = "top";
 	ctx.fillText("Princesses caught: " + princessesCaught, 0, 0);
+	ctx.fillText("Lives: " + lives, 0, 448);
 };
 
 // The main game loop
