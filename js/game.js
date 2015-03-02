@@ -63,6 +63,8 @@ var princessesCaught = 0;
 //var stone = {};
 var stoneCollection = [];
 var maxStones = 5;
+var stones = 0;
+var level = 1;
 
 // Handle keyboard controls
 var keysDown = {};
@@ -269,6 +271,13 @@ var update = function (modifier) {
 		&& princess.y <= (hero.y + 32)
 	) {
 		++princessesCaught;
+		if(princessesCaught % 10 == 0){
+			level += 1;
+			monster.speed += 30;
+			if(stones <= maxStones){
+				stones += 1;
+			}
+		}
 		reset();
 	}
 
@@ -280,6 +289,13 @@ var update = function (modifier) {
 		&& monster.y <= (hero.y + 32)
 		){
 			--lives;
+			if(lives == 0){
+				princessesCaught = 0;
+				level = 1;
+				lives = 3;
+				monster.speed = 30;
+				stones = 0;
+			}
 			reset();
 	}
 };
@@ -303,7 +319,7 @@ var render = function () {
 	}
 
 	if (stoneReady){
-		for(var i=0; i<maxStones ; i++){
+		for(var i=0; i<stones ; i++){
 			var stx = stoneCollection[i].x;
 			var sty = stoneCollection[i].y;
 			ctx.drawImage(stoneImage, stx, sty);
