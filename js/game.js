@@ -169,7 +169,7 @@ var reset = function () {
 };
 
 var colideHero = function(){
-	for(var i=0;i<maxStones;i++){
+	for(var i=0;i<stones;i++){
 		if((stoneCollection[i].x<=(hero.x+30)) &&
 			(hero.x<=(stoneCollection[i].x+30)) &&
 			(stoneCollection[i].y <= (hero.y+30)) &&
@@ -182,7 +182,7 @@ var colideHero = function(){
 }
 
 var colideMonster = function(){
-	for(var i=0;i<maxStones;i++){
+	for(var i=0;i<stones;i++){
 		if((stoneCollection[i].x<=(monster.x+30)) &&
 			(monster.x<=(stoneCollection[i].x+30)) &&
 			(stoneCollection[i].y <= (monster.y+30)) &&
